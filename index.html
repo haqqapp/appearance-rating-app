@@ -1,180 +1,130 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Appearance Rating</title>
-  <style>
-    :root{
-      --bg:#0b0b0f;
-      --card:#15151b;
-      --card2:#1b1b22;
-      --text:#f5f5f7;
-      --muted:#9b9ba6;
-      --line:#2a2a34;
-      --accent:#ffffff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,#0a0a0d,#111118);
-      color:var(--text);
-    }
-    .wrap{max-width:1100px;margin:auto;padding:32px 20px 80px}
-    .hero{padding:54px 0 34px}
-    .eyebrow{color:var(--muted);font-size:12px;letter-spacing:.22em;text-transform:uppercase}
-    h1{font-size:clamp(42px,7vw,82px);line-height:.95;margin:12px 0 18px;letter-spacing:-.05em}
-    .lead{max-width:720px;color:var(--muted);font-size:18px;line-height:1.6}
-    .scorebox{
-      margin-top:28px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:22px;
-      display:flex;
-      justify-content:space-between;
-      align-items:end;
-      gap:20px;
-      flex-wrap:wrap;
-    }
-    .scorebox .big{font-size:54px;font-weight:800;letter-spacing:-.04em}
-    .scorebox small{color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-    }
-    .top{display:flex;gap:16px;align-items:center}
-    .avatar{
-      width:92px;height:92px;border-radius:18px;
-      background:linear-gradient(145deg,#2b2b34,#17171e);
-      display:grid;place-items:center;
-      color:#c9c9d0;font-size:13px;text-align:center;
-      border:1px solid #34343e;
-      padding:10px;
-    }
-    h2{font-size:20px;margin:0 0 6px}
-    .hint{color:var(--muted);font-size:14px}
-    .row{margin-top:18px}
-    .label{display:flex;justify-content:space-between;color:#d7d7dc;font-size:14px;margin-bottom:8px}
-    input[type=range]{width:100%;accent-color:white}
-    .weightsum{
-      margin-top:18px;
-      padding:14px 16px;
-      border-radius:16px;
-      background:var(--card2);
-      color:var(--muted);
-      font-size:14px;
-    }
-    footer{margin-top:28px;color:#6f6f7b;font-size:12px;line-height:1.6}
-    @media(max-width:760px){
-      .grid{grid-template-columns:1fr}
-      .scorebox .big{font-size:46px}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Appearance Rating</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#0b0b0f;color:#fff}
+.app{max-width:720px;margin:auto;padding:24px}
+.card{background:#15151b;border:1px solid #2a2a34;border-radius:24px;padding:24px;margin-top:24px}
+.screen{display:none}.screen.active{display:block}
+h1{font-size:48px;line-height:1;margin:10px 0 18px}h2{font-size:30px;margin:0 0 10px}
+p{color:#aaa;line-height:1.6}
+button{width:100%;padding:15px;border-radius:14px;border:0;font-weight:700;cursor:pointer}
+.primary{background:white;color:black}.secondary{background:#22222a;color:white;border:1px solid #33333d}
+.actions{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:18px}
+.progress{height:7px;background:#222;border-radius:20px;overflow:hidden;margin:14px 0 24px}.progress div{height:100%;background:white}
+.avatar{height:230px;border-radius:20px;background:linear-gradient(145deg,#292934,#17171d);display:grid;place-items:center;color:#aaa;margin:20px 0;border:1px solid #333}
+.range{background:#1b1b22;border:1px solid #30303a;padding:16px;border-radius:16px;margin-top:14px}
+.rangehead{display:flex;justify-content:space-between;margin-bottom:10px}input{width:100%}
+.score{font-size:70px;font-weight:800;text-align:center;padding:22px}
+.row{display:flex;justify-content:space-between;background:#1b1b22;padding:14px;border-radius:14px;margin:8px 0}
+.small{font-size:12px;color:#777}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <div class="eyebrow">Appearance Profile</div>
+<div class="app">
+  <div><b>Appearance Rating</b> <span class="small">18+ Prototyp</span></div>
+
+  <section id="start" class="screen active">
+    <div class="card">
       <h1>Dein persönliches Bewertungsprofil</h1>
-      <p class="lead">
-        Bewerte einzelne Bereiche und lege selbst fest, wie wichtig sie dir sind.
-        Der Gesamtscore wird automatisch aus Bewertung und Gewichtung berechnet.
-      </p>
-
-      <div class="scorebox">
-        <div>
-          <small>Gesamtscore</small>
-          <div class="big"><span id="totalScore">7.5</span><span style="font-size:.45em;color:#8f8f9a"> / 10</span></div>
-        </div>
-        <div style="min-width:260px">
-          <small>Gesamtgewichtung</small>
-          <div style="font-size:24px;font-weight:700;margin-top:5px"><span id="totalWeight">100</span> Punkte</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="cards" class="grid"></section>
-
-    <div class="weightsum">
-      Tipp: Die Gewichte müssen nicht zusammen 100 ergeben. Die App normalisiert sie automatisch.
+      <p>Du bewertest jeden Bereich einzeln und legst selbst fest, wie wichtig er dir ist. Am Ende wird daraus dein persönlicher Gesamtscore berechnet.</p>
+      <div class="avatar">Avatar / Beispielbild</div>
+      <button class="primary" onclick="startApp()">Bewertung starten</button>
     </div>
+  </section>
 
-    <footer>
-      Prototyp ohne Foto-Upload. Die Platzhalter für Referenzbilder können später durch eigene Avatar-
-      oder Beispielgrafiken ersetzt werden. Nur für Erwachsene konzipieren.
-    </footer>
-  </main>
+  <section id="rating" class="screen">
+    <div class="card">
+      <div id="stepText" class="small"></div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <h2 id="categoryName"></h2>
+      <p id="categoryHint"></p>
+      <div class="avatar" id="avatarText">Beispielbild</div>
 
-  <script>
-    const categories = [
-      {name:"Gesicht", hint:"Gesamteindruck und Gesichtsmerkmale", score:8.0, weight:30},
-      {name:"Oberkörper", hint:"Form und Verhältnis zum restlichen Körper", score:7.2, weight:12},
-      {name:"Brust / Oberweite", hint:"Persönliche Präferenz und Proportion", score:7.4, weight:12},
-      {name:"Bauch / Taille", hint:"Form und Verhältnis von Taille und Rumpf", score:7.0, weight:12},
-      {name:"Hüfte / Po", hint:"Form und Proportion", score:7.8, weight:14},
-      {name:"Beine", hint:"Form, Länge und Gesamteindruck", score:7.3, weight:8},
-      {name:"Proportionen", hint:"Gesamtharmonie der Körperbereiche", score:7.7, weight:8},
-      {name:"Styling", hint:"Frisur, Kleidung und gepflegter Gesamteindruck", score:8.1, weight:4}
-    ];
+      <div class="range">
+        <div class="rangehead"><span>Bewertung</span><b><span id="scoreValue">7.5</span>/10</b></div>
+        <input id="scoreRange" type="range" min="0" max="10" step="0.1" value="7.5">
+      </div>
 
-    const cards = document.getElementById("cards");
+      <div class="range">
+        <div class="rangehead"><span>Gewichtung</span><b id="weightValue">10</b></div>
+        <input id="weightRange" type="range" min="0" max="100" step="1" value="10">
+      </div>
 
-    function render(){
-      cards.innerHTML = "";
-      categories.forEach((c,i)=>{
-        const el = document.createElement("article");
-        el.className = "card";
-        el.innerHTML = `
-          <div class="top">
-            <div class="avatar">Beispielbild<br>für ${c.name}</div>
-            <div>
-              <h2>${c.name}</h2>
-              <div class="hint">${c.hint}</div>
-            </div>
-          </div>
+      <div class="actions">
+        <button class="secondary" onclick="back()">Zurück</button>
+        <button class="primary" id="nextBtn" onclick="next()">Weiter</button>
+      </div>
+    </div>
+  </section>
 
-          <div class="row">
-            <div class="label"><span>Bewertung</span><strong><span id="s${i}">${c.score.toFixed(1)}</span>/10</strong></div>
-            <input data-type="score" data-index="${i}" type="range" min="0" max="10" step="0.1" value="${c.score}">
-          </div>
+  <section id="result" class="screen">
+    <div class="card">
+      <h2>Dein Ergebnis</h2>
+      <p>Der Score basiert auf deinen eigenen Bewertungen und Gewichtungen.</p>
+      <div class="score"><span id="finalScore">0.0</span> / 10</div>
+      <div id="breakdown"></div>
+      <button class="primary" onclick="restart()">Neu starten</button>
+    </div>
+  </section>
+</div>
 
-          <div class="row">
-            <div class="label"><span>Gewichtung</span><strong><span id="w${i}">${c.weight}</span></strong></div>
-            <input data-type="weight" data-index="${i}" type="range" min="0" max="100" step="1" value="${c.weight}">
-          </div>
-        `;
-        cards.appendChild(el);
-      });
+<script>
+const categories=[
+{name:"Gesicht",hint:"Bewerte den Gesamteindruck des Gesichts.",score:7.5,weight:30},
+{name:"Oberkörper",hint:"Bewerte Form und Proportion des Oberkörpers.",score:7.5,weight:10},
+{name:"Brust / Oberweite",hint:"Bewerte diesen Bereich nach deiner persönlichen Präferenz.",score:7.5,weight:10},
+{name:"Bauch / Taille",hint:"Bewerte Form und Proportion.",score:7.5,weight:10},
+{name:"Hüfte / Po",hint:"Bewerte Form und Verhältnis zum restlichen Körper.",score:7.5,weight:15},
+{name:"Beine",hint:"Bewerte Form, Länge und Gesamteindruck.",score:7.5,weight:10},
+{name:"Proportionen",hint:"Bewerte die Harmonie der Körperbereiche.",score:7.5,weight:10},
+{name:"Styling",hint:"Bewerte Frisur, Kleidung und Gesamteindruck.",score:7.5,weight:5}
+];
+let current=0;
+const scoreRange=document.getElementById("scoreRange");
+const weightRange=document.getElementById("weightRange");
 
-      document.querySelectorAll("input[type=range]").forEach(input=>{
-        input.addEventListener("input", e=>{
-          const idx = Number(e.target.dataset.index);
-          const type = e.target.dataset.type;
-          const val = Number(e.target.value);
-          categories[idx][type] = val;
-          if(type === "score") document.getElementById("s"+idx).textContent = val.toFixed(1);
-          if(type === "weight") document.getElementById("w"+idx).textContent = val.toFixed(0);
-          updateTotal();
-        });
-      });
-
-      updateTotal();
-    }
-
-    function updateTotal(){
-      const totalWeight = categories.reduce((sum,c)=>sum+c.weight,0);
-      const weighted = categories.reduce((sum,c)=>sum+(c.score*c.weight),0);
-      const totalScore = totalWeight === 0 ? 0 : weighted/totalWeight;
-      document.getElementById("totalScore").textContent = totalScore.toFixed(1);
-      document.getElementById("totalWeight").textContent = totalWeight.toFixed(0);
-    }
-
-    render();
-  </script>
+function show(id){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function load(){
+  const c=categories[current];
+  document.getElementById("categoryName").textContent=c.name;
+  document.getElementById("categoryHint").textContent=c.hint;
+  document.getElementById("avatarText").textContent="Beispielbild: "+c.name;
+  document.getElementById("stepText").textContent=`Schritt ${current+1} von ${categories.length}`;
+  document.getElementById("progressBar").style.width=`${((current+1)/categories.length)*100}%`;
+  scoreRange.value=c.score;
+  weightRange.value=c.weight;
+  document.getElementById("scoreValue").textContent=c.score.toFixed(1);
+  document.getElementById("weightValue").textContent=c.weight;
+  document.getElementById("nextBtn").textContent=current===categories.length-1?"Ergebnis anzeigen":"Weiter";
+}
+scoreRange.oninput=()=>{
+  categories[current].score=+scoreRange.value;
+  document.getElementById("scoreValue").textContent=(+scoreRange.value).toFixed(1);
+}
+weightRange.oninput=()=>{
+  categories[current].weight=+weightRange.value;
+  document.getElementById("weightValue").textContent=weightRange.value;
+}
+function startApp(){current=0;load();show("rating")}
+function next(){if(current<categories.length-1){current++;load()}else{result()}}
+function back(){if(current>0){current--;load()}else show("start")}
+function result(){
+  const totalW=categories.reduce((s,c)=>s+c.weight,0);
+  const total=totalW?categories.reduce((s,c)=>s+c.score*c.weight,0)/totalW:0;
+  document.getElementById("finalScore").textContent=total.toFixed(1);
+  document.getElementById("breakdown").innerHTML=categories.map(
+    c=>`<div class="row"><span>${c.name}</span><b>${c.score.toFixed(1)} · Gewicht ${c.weight}</b></div>`
+  ).join("");
+  show("result");
+}
+function restart(){categories.forEach(c=>c.score=7.5);show("start")}
+</script>
 </body>
 </html>
